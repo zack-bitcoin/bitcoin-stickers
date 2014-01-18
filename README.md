@@ -1,4 +1,4 @@
 python software
-requires "convert" from imageMagick
 
-permissions issues on files in linux, but it should work fine in Windows.
+This software generates mini-keys to mint bitcoin-coins with.
+works correctly in Ubuntu. Should work for windows too.

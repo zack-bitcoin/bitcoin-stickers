@@ -1,9 +1,12 @@
 import pybitcointools as pt
 import random
 import hashlib, os, thread, sys
+from PIL import Image
+from PIL import ImageFont
+from PIL import ImageDraw
 
 def font_size():
-    return 22
+    return 25
 def width_between_circles():
     return 225
 def height_between_circles():
@@ -12,10 +15,10 @@ def number_of_rows():
     return 11
 def number_of_columns():
     return 7
-def frame_top():
-    return 110
-def frame_side():
-    return 150
+def frame_top():#moves text left-right
+    return 98
+def frame_side():#moves text up-down
+    return 125
 def circle_radius():
     return 45
 
@@ -68,10 +71,13 @@ def CheckShortKey(shortKey):
 
 #Drawing#
 def draw_num(filename, num, x, y):
-    x=str(x)
-    y=str(y)
     num=str(num)
-    os.system('''convert {} -pointsize {} -fill black -draw "text {},{} '{}'" {}'''.format(filename, str(font_size()), x, y, num, filename))
+    img = Image.open(filename)
+    draw = ImageDraw.Draw(img)
+    font = ImageFont.truetype("./UbuntuMono-R.ttf", font_size())
+    draw.text((x, y),str(num), fill=(0,255), font=font)#,(255,255,255), font=font)
+    img.save(filename)
+    #    os.system('''convert {} -pointsize {} -fill black -draw "text {},{} '{}'" {}'''.format(filename, str(font_size()), x, y, num, filename))
 
 def draw_circle(filename, nums, x, y):#4,7,8,7,4
     s=font_size()
@@ -103,7 +109,8 @@ def gen_row(height, file, column_number, column_total, sheet_num, digits):
     width=width_between_circles()
     f=int2padded_string
     for i in range(rows):
-        if True:#i==3:
+        if True:
+#        if i in [0]:
             draw_circle_line(file, keys[i], frame_top()+i*width, frame_side()+height)
             print('Sticker #{} of Row #{} of Sheet #{}.....................Done'.format(f(i + 1, digits), f(column_number + 1, digits), f(sheet_num+1, digits)))
     pubs=[]
@@ -119,14 +126,16 @@ def gen_pages(sticker_file, addresses_file, pages):
     for i in range(int(pages)):
         numbered_sticker_file=number_the_file(sticker_file, digits, i)
         numbered_addresses_file=number_the_file(addresses_file, digits, i)
-        print('cp ol32blank.png {}'.format(numbered_sticker_file))
-        os.system('cp ol32blank.png {}'.format(numbered_sticker_file))
-        error('here')
-        os.system("cls")
+ #       print('cp ol32blank.png {}'.format(numbered_sticker_file))
+#        os.system('cp ol32blank.png {}'.format(numbered_sticker_file))
+        os.system('cp ol32good.png {}'.format(numbered_sticker_file))
+#        error('here')
+#        os.system("cls")
         pubs=[]
         col=number_of_columns()
         for j in range(col):
-            if True:#j==3:
+            if True:
+#            if j in [0]:
                 pubs.extend(gen_row(j*2*height_between_circles(), numbered_sticker_file, j, col, i, digits))
         f=open(numbered_addresses_file, 'w')
         for i in pubs:
@@ -135,6 +144,8 @@ def gen_pages(sticker_file, addresses_file, pages):
         f.close()
 
 input_var = input("How many sheets?: ")
-gen_pages('sheets\stickersheet.png', 'sheets\publicsheet.txt', int(input_var))
+
+#gen_pages('sheets\stickersheet.png', 'sheets\publicsheet.txt', int(input_var))
+gen_pages('stickersheet.png', 'publicsheet.txt', int(input_var))
 
 
